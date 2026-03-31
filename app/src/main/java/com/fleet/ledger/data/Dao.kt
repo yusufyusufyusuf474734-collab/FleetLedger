@@ -76,6 +76,19 @@ interface TripDao {
 }
 
 @Dao
+interface MonthlyExpenseDao {
+    @Query("SELECT * FROM monthly_expenses WHERE vehicleId = :vid AND year = :y AND month = :m ORDER BY label ASC")
+    fun getByVehicleAndMonth(vid: Long, y: Int, m: Int): Flow<List<MonthlyExpense>>
+
+    @Query("SELECT * FROM monthly_expenses WHERE year = :y AND month = :m ORDER BY vehicleId, label ASC")
+    fun getByMonth(y: Int, m: Int): Flow<List<MonthlyExpense>>
+
+    @Insert fun insert(e: MonthlyExpense): Long
+    @Update fun update(e: MonthlyExpense)
+    @Delete fun delete(e: MonthlyExpense)
+}
+
+@Dao
 interface DocumentDao {
     @Query("SELECT * FROM documents WHERE vehicleId = :vid ORDER BY expiryDate ASC")
     fun getByVehicle(vid: Long): Flow<List<Document>>

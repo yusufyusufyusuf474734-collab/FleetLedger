@@ -5,8 +5,8 @@ import androidx.room.*
 
 @TypeConverters(Converters::class)
 @Database(
-    entities = [Vehicle::class, Partner::class, VehiclePartner::class, Trip::class, Document::class],
-    version = 3,
+    entities = [Vehicle::class, Partner::class, VehiclePartner::class, Trip::class, Document::class, MonthlyExpense::class],
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -14,6 +14,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun partnerDao(): PartnerDao
     abstract fun tripDao(): TripDao
     abstract fun documentDao(): DocumentDao
+    abstract fun monthlyExpenseDao(): MonthlyExpenseDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

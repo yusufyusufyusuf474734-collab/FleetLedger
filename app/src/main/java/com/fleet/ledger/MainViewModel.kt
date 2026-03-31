@@ -61,6 +61,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun updateDocument(d: Document) = viewModelScope.launch { repo.updateDocument(d) }
     fun deleteDocument(d: Document) = viewModelScope.launch { repo.deleteDocument(d) }
 
+    // Aylık sabit gider
+    fun monthlyExpensesFor(vid: Long, year: Int, month: Int) = repo.monthlyExpensesFor(vid, year, month)
+    fun monthlyExpensesByMonth(year: Int, month: Int) = repo.monthlyExpensesByMonth(year, month)
+    fun addMonthlyExpense(e: MonthlyExpense) = viewModelScope.launch { repo.addMonthlyExpense(e) }
+    fun updateMonthlyExpense(e: MonthlyExpense) = viewModelScope.launch { repo.updateMonthlyExpense(e) }
+    fun deleteMonthlyExpense(e: MonthlyExpense) = viewModelScope.launch { repo.deleteMonthlyExpense(e) }
+
     // Ay sonu hesabı yardımcısı
     fun monthRange(year: Int, month: Int): Pair<Long, Long> {
         val cal = Calendar.getInstance()

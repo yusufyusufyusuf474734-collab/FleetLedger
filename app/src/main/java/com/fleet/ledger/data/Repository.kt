@@ -35,6 +35,15 @@ class Repository(private val db: AppDatabase) {
     suspend fun updateTrip(t: Trip) = withContext(Dispatchers.IO) { db.tripDao().update(t) }
     suspend fun deleteTrip(t: Trip) = withContext(Dispatchers.IO) { db.tripDao().delete(t) }
 
+    fun monthlyExpensesFor(vid: Long, year: Int, month: Int): Flow<List<MonthlyExpense>> =
+        db.monthlyExpenseDao().getByVehicleAndMonth(vid, year, month)
+    fun monthlyExpensesByMonth(year: Int, month: Int): Flow<List<MonthlyExpense>> =
+        db.monthlyExpenseDao().getByMonth(year, month)
+
+    suspend fun addMonthlyExpense(e: MonthlyExpense) = withContext(Dispatchers.IO) { db.monthlyExpenseDao().insert(e) }
+    suspend fun updateMonthlyExpense(e: MonthlyExpense) = withContext(Dispatchers.IO) { db.monthlyExpenseDao().update(e) }
+    suspend fun deleteMonthlyExpense(e: MonthlyExpense) = withContext(Dispatchers.IO) { db.monthlyExpenseDao().delete(e) }
+
     suspend fun addDocument(d: Document) = withContext(Dispatchers.IO) { db.documentDao().insert(d) }
     suspend fun updateDocument(d: Document) = withContext(Dispatchers.IO) { db.documentDao().update(d) }
     suspend fun deleteDocument(d: Document) = withContext(Dispatchers.IO) { db.documentDao().delete(d) }

@@ -71,6 +71,24 @@ data class Trip(
     val netProfit: Double get() = income - totalExpense
 }
 
+// ── Aylık Sabit Gider ─────────────────────────────────────────────────────────
+
+@Entity(
+    tableName = "monthly_expenses",
+    foreignKeys = [ForeignKey(Vehicle::class, ["id"], ["vehicleId"], onDelete = ForeignKey.CASCADE)],
+    indices = [Index("vehicleId")]
+)
+data class MonthlyExpense(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val vehicleId: Long,
+    val year: Int,
+    val month: Int,          // 1-12
+    val label: String,       // SGK, HGS, Bakım, vb.
+    val amount: Double,
+    val note: String = "",
+    val createdAt: Long = System.currentTimeMillis()
+)
+
 // ── Belge ─────────────────────────────────────────────────────────────────────
 
 enum class DocumentType(val label: String) {
