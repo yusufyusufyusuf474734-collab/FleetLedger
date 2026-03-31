@@ -34,6 +34,18 @@ fun TripFormDialog(
     fun d(s: String) = s.toDoubleOrNull() ?: 0.0
     val net = d(income) - d(fuel) - d(bridge) - d(highway) - d(driverFee) - d(other)
 
+    @Composable
+    fun TF(label: String, value: String, isNum: Boolean = false, onChange: (String) -> Unit) {
+        OutlinedTextField(
+            value = value, onValueChange = onChange,
+            label = { Text(label) },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = if (isNum) KeyboardOptions(keyboardType = KeyboardType.Number)
+                              else KeyboardOptions.Default
+        )
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(if (existing != null) "Sefer Düzenle" else "Sefer Ekle") },
@@ -42,26 +54,28 @@ fun TripFormDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Field("Tarih (gg.aa.yyyy)", date, isDate = true) { date = it }
-                Field("Sefer Açıklaması (örn: İst-Ank)", desc) { desc = it }
+                TF("Tarih (gg.aa.yyyy)", date) { date = it }
+                TF("Sefer Açıklaması (örn: İst-Ank)", desc) { desc = it }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
-                Text("Gelir", style = MaterialTheme.typography.labelMedium,
-                    color = Green500)
-                Field("Gelir (₺)", income, isNum = true) { income = it }
+                Text("Gelir", style = MaterialTheme.typography.labelMedium, color = Green500)
+                TF("Gelir (₺)", income, isNum = true) { income = it }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
-                Text("Giderler", style = MaterialTheme.typography.labelMedium,
-                    color = Red500)
-                Field("Yakıt (₺)", fuel, isNum = true) { fuel = it }
-                Field("Köprü (₺)", bridge, isNum = true) { bridge = it }
-                Field("Otoban (₺)", highway, isNum = true) { highway = it }
-                Field("Şoför Ücreti (₺)", driverFee, isNum = true) { driverFee = it }
-                Field("Diğer Gider (₺)", other, isNum = true) { other = it }
-                Field("Not", note) { note = it }
+                Text("Giderler", style = MaterialTheme.typography.labelMedium, color = Red500)
+                TF("Yakıt (₺)", fuel, isNum = true) { fuel = it }
+                TF("Köprü (₺)", bridge, isNum = true) { bridge = it }
+                TF("Otoban (₺)", highway, isNum = true) { highway = it }
+                TF("Şoför Ücreti (₺)", driverFee, isNum = true) { driverFee = it }
+                TF("Diğer Gider (₺)", other, isNum = true) { other = it }
+                TF("Not", note) { note = it }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
-                Surface(shape = MaterialTheme.shapes.small,
-                    color = if (net >= 0) Green500.copy(alpha = 0.1f) else Red500.copy(alpha = 0.1f)) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween) {
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = if (net >= 0) Green500.copy(alpha = 0.1f) else Red500.copy(alpha = 0.1f)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text("Net Kar/Zarar", style = MaterialTheme.typography.bodySmall)
                         Text(net.tl(), style = MaterialTheme.typography.bodyMedium,
                             color = if (net >= 0) Green500 else Red500)
@@ -73,10 +87,19 @@ fun TripFormDialog(
             Button(onClick = {
                 val epoch = try { sdf.parse(date)?.time ?: System.currentTimeMillis() }
                             catch (e: Exception) { System.currentTimeMillis() }
-                onSave(Trip(id = existing?.id ?: 0, vehicleId = vehicleId, date = epoch,
-                    description = desc.trim(), income = d(income), fuelCost = d(fuel),
-                    bridgeCost = d(bridge), highwayCost = d(highway), driverFee = d(driverFee),
-                    otherCost = d(other), note = note.trim()))
+                onSave(Trip(
+                    id = existing?.id ?: 0,
+                    vehicleId = vehicleId,
+                    date = epoch,
+                    description = desc.trim(),
+                    income = d(income),
+                    fuelCost = d(fuel),
+                    bridgeCost = d(bridge),
+                    highwayCost = d(highway),
+                    driverFee = d(driverFee),
+                    otherCost = d(other),
+                    note = note.trim()
+                ))
             }) { Text("Kaydet") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("İptal") } }
