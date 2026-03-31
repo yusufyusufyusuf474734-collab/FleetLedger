@@ -46,4 +46,26 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(libs.coil.compose)
     ksp(libs.androidx.room.compiler)
+    
+    // WorkManager - Bildirimler için
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    
+    // Biometric - Biyometrik kimlik doğrulama
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    
+    // Firebase - Cloud sync ve authentication (opsiyonel)
+    // implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    // implementation("com.google.firebase:firebase-auth-ktx")
+    // implementation("com.google.firebase:firebase-firestore-ktx")
+    
+    // Google Maps - Rota takibi (opsiyonel)
+    // implementation("com.google.android.gms:play-services-maps:18.2.0")
+    // implementation("com.google.maps.android:maps-compose:4.3.0")
+    
+    // PDF oluşturma
+    implementation("com.itextpdf:itext7-core:7.2.5")
+    
+    // Excel oluşturma
+    implementation("org.apache.poi:poi:5.2.5")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 }
