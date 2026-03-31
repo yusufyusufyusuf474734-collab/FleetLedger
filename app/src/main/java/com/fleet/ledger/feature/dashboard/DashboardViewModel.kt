@@ -3,10 +3,13 @@ package com.fleet.ledger.feature.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fleet.ledger.core.domain.model.Vehicle
+import com.fleet.ledger.core.domain.model.VehicleSummary
+import com.fleet.ledger.core.domain.model.Document
+import com.fleet.ledger.core.domain.model.Trip
+import com.fleet.ledger.core.domain.repository.TripRepository
+import com.fleet.ledger.core.domain.repository.DocumentRepository
 import com.fleet.ledger.core.domain.usecase.GetVehiclesUseCase
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 
 class DashboardViewModel(
     getVehiclesUseCase: GetVehiclesUseCase,

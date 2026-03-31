@@ -222,8 +222,8 @@ private fun ExpenseBreakdownCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             ExpenseItem("Yakıt", fuelCost, Icons.Default.LocalGasStation)
-            ExpenseItem("Köprü", bridgeCost, Icons.Default.Bridge)
-            ExpenseItem("Otoyol", highwayCost, Icons.Default.Highway)
+            ExpenseItem("Köprü", bridgeCost, Icons.Default.AccountBalance)
+            ExpenseItem("Otoyol", highwayCost, Icons.Default.Route)
             ExpenseItem("Şoför Ücreti", driverFee, Icons.Default.Person)
             ExpenseItem("Diğer", otherCost, Icons.Default.MoreHoriz)
         }

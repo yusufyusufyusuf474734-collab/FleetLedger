@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fleet.ledger.core.domain.model.Partner
 import com.fleet.ledger.core.domain.model.Vehicle
+import com.fleet.ledger.core.domain.model.VehiclePartnerShare
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
