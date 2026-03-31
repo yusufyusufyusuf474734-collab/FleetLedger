@@ -11,8 +11,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.fleet.ledger.ui.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     private val vm: MainViewModel by viewModels()
 
@@ -33,12 +35,14 @@ class MainActivity : ComponentActivity() {
                 } else {
                     Scaffold(
                         bottomBar = {
-                            NavigationBar(containerColor = MaterialTheme.colorScheme.surface,
-                                tonalElevation = 0.dp) {
+                            NavigationBar(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                tonalElevation = 0.dp
+                            ) {
                                 NavigationBarItem(
                                     selected = currentTab == 0,
                                     onClick = { currentTab = 0 },
-                                    icon = { Icon(Icons.Default.Dashboard, "Dashboard") },
+                                    icon = { Icon(Icons.Default.Dashboard, "Özet") },
                                     label = { Text("Özet") }
                                 )
                                 NavigationBarItem(
@@ -52,11 +56,14 @@ class MainActivity : ComponentActivity() {
                         topBar = {
                             TopAppBar(
                                 title = {
-                                    Text(if (currentTab == 0) "Genel Bakış" else "Araçlar",
-                                        style = MaterialTheme.typography.titleMedium)
+                                    Text(
+                                        if (currentTab == 0) "Genel Bakış" else "Araçlar",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
                                 },
                                 colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surface)
+                                    containerColor = MaterialTheme.colorScheme.surface
+                                )
                             )
                         },
                         containerColor = MaterialTheme.colorScheme.background,

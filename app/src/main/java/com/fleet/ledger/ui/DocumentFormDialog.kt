@@ -25,14 +25,16 @@ fun DocumentFormDialog(
     fun Long?.fmt() = this?.let { sdf.format(Date(it)) } ?: ""
     fun String.toEpoch(): Long? = try { sdf.parse(this)?.time } catch (e: Exception) { null }
 
-    var type      by remember { mutableStateOf(existing?.type ?: DocumentType.KASKO) }
-    var title     by remember { mutableStateOf(existing?.title ?: "") }
-    var company   by remember { mutableStateOf(existing?.company ?: "") }
-    var policyNo  by remember { mutableStateOf(existing?.policyNo ?: "") }
-    var startDate by remember { mutableStateOf(existing?.startDate.fmt()) }
+    var type       by remember { mutableStateOf(existing?.type ?: DocumentType.KASKO) }
+    var title      by remember { mutableStateOf(existing?.title ?: "") }
+    var company    by remember { mutableStateOf(existing?.company ?: "") }
+    var policyNo   by remember { mutableStateOf(existing?.policyNo ?: "") }
+    var startDate  by remember { mutableStateOf(existing?.startDate.fmt()) }
     var expiryDate by remember { mutableStateOf(existing?.expiryDate.fmt()) }
-    var amount    by remember { mutableStateOf(existing?.amount?.takeIf { it > 0 }?.toInt()?.toString() ?: "") }
-    var note      by remember { mutableStateOf(existing?.note ?: "") }
+    var amount     by remember { mutableStateOf(existing?.amount?.takeIf { it > 0 }?.toInt()?.toString() ?: "") }
+    var note       by remember { mutableStateOf(existing?.note ?: "") }
+
+    val allTypes = DocumentType.entries.toList()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -42,11 +44,16 @@ fun DocumentFormDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Belge türü
                 Text("Belge Türü", style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                DocumentType.values().chunked(3).forEach { row ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+
+                // 3'lü satırlar
+                val rows = allTypes.chunked(3)
+                rows.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         row.forEach { t ->
                             FilterChip(
                                 selected = type == t,
@@ -55,17 +62,22 @@ fun DocumentFormDialog(
                                 modifier = Modifier.weight(1f)
                             )
                         }
-                        repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+                        // Boş hücre dolgusu
+                        val empty = 3 - row.size
+                        if (empty > 0) {
+                            repeat(empty) { Spacer(Modifier.weight(1f)) }
+                        }
                     }
                 }
+
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
-                Field("Başlık / Poliçe Adı", title) { title = it }
-                Field("Sigorta Şirketi", company) { company = it }
-                Field("Poliçe Numarası", policyNo) { policyNo = it }
-                Field("Başlangıç Tarihi (gg.aa.yyyy)", startDate, isDate = true) { startDate = it }
-                Field("Bitiş Tarihi (gg.aa.yyyy)", expiryDate, isDate = true) { expiryDate = it }
-                Field("Prim / Ücret (₺)", amount, isNum = true) { amount = it }
-                Field("Not", note) { note = it }
+                DocField("Başlık / Poliçe Adı", title) { title = it }
+                DocField("Sigorta Şirketi", company) { company = it }
+                DocField("Poliçe Numarası", policyNo) { policyNo = it }
+                DocField("Başlangıç Tarihi (gg.aa.yyyy)", startDate) { startDate = it }
+                DocField("Bitiş Tarihi (gg.aa.yyyy)", expiryDate) { expiryDate = it }
+                DocField("Prim / Ücret (₺)", amount, isNum = true) { amount = it }
+                DocField("Not", note) { note = it }
             }
         },
         confirmButton = {
@@ -89,15 +101,13 @@ fun DocumentFormDialog(
 }
 
 @Composable
-fun Field(label: String, value: String, isDate: Boolean = false, isNum: Boolean = false, onChange: (String) -> Unit) {
+fun DocField(label: String, value: String, isNum: Boolean = false, onChange: (String) -> Unit) {
     OutlinedTextField(
         value = value, onValueChange = onChange,
         label = { Text(label) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
-        keyboardOptions = when {
-            isNum  -> KeyboardOptions(keyboardType = KeyboardType.Number)
-            else   -> KeyboardOptions.Default
-        }
+        keyboardOptions = if (isNum) KeyboardOptions(keyboardType = KeyboardType.Number)
+                          else KeyboardOptions.Default
     )
 }
