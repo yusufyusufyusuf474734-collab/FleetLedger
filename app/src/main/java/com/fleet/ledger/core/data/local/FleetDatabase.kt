@@ -18,6 +18,7 @@ import com.fleet.ledger.core.data.local.entity.TripEntity
 )
 abstract class FleetDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
+    abstract fun tripDao(): com.fleet.ledger.core.data.local.dao.TripDao
     
     companion object {
         @Volatile
