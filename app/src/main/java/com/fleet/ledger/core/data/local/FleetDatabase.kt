@@ -11,7 +11,8 @@ import com.fleet.ledger.core.data.local.entity.TripEntity
 @Database(
     entities = [
         VehicleEntity::class,
-        TripEntity::class
+        TripEntity::class,
+        com.fleet.ledger.core.data.local.entity.PartnerEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -19,6 +20,7 @@ import com.fleet.ledger.core.data.local.entity.TripEntity
 abstract class FleetDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
     abstract fun tripDao(): com.fleet.ledger.core.data.local.dao.TripDao
+    abstract fun partnerDao(): com.fleet.ledger.core.data.local.dao.PartnerDao
     
     companion object {
         @Volatile

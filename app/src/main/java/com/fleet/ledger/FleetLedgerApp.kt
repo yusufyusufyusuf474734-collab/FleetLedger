@@ -14,10 +14,14 @@ import com.fleet.ledger.ui.theme.FleetLedgerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FleetLedgerApp(
-    dashboardViewModel: DashboardViewModel
+    dashboardViewModel: DashboardViewModel,
+    vehiclesViewModel: com.fleet.ledger.feature.vehicle.VehiclesViewModel,
+    partnersViewModel: com.fleet.ledger.feature.partner.PartnersViewModel,
+    reportsViewModel: com.fleet.ledger.feature.report.ReportsViewModel
 ) {
     FleetLedgerTheme {
         var selectedTab by remember { mutableIntStateOf(0) }
+        var selectedVehicleId by remember { mutableStateOf<Long?>(null) }
         
         Scaffold(
             topBar = {
@@ -80,9 +84,16 @@ fun FleetLedgerApp(
             ) {
                 when (selectedTab) {
                     0 -> DashboardScreen(viewModel = dashboardViewModel)
-                    1 -> PlaceholderScreen("Araçlar")
-                    2 -> PlaceholderScreen("Ortaklar")
-                    3 -> PlaceholderScreen("Raporlar")
+                    1 -> com.fleet.ledger.feature.vehicle.VehiclesScreen(
+                        viewModel = vehiclesViewModel,
+                        onVehicleClick = { selectedVehicleId = it }
+                    )
+                    2 -> com.fleet.ledger.feature.partner.PartnersScreen(
+                        viewModel = partnersViewModel
+                    )
+                    3 -> com.fleet.ledger.feature.report.ReportsScreen(
+                        viewModel = reportsViewModel
+                    )
                 }
             }
         }
