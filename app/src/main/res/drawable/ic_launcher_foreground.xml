@@ -1,7 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp"
-    android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#3B82F6"
-        android:pathData="M54,30 L70,50 L62,50 L62,78 L46,78 L46,50 L38,50 Z"/>
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Otobüs gövdesi -->
+    <path
+        android:fillColor="#3B82F6"
+        android:pathData="M18,52 Q18,44 26,44 L82,44 Q90,44 90,52 L90,74 Q90,78 86,78 L22,78 Q18,78 18,74 Z"/>
+
+    <!-- Otobüs üst kısmı (kabin) -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M26,44 L26,38 Q26,32 32,32 L76,32 Q82,32 82,38 L82,44 Z"/>
+
+    <!-- Sol pencere -->
+    <path
+        android:fillColor="#DBEAFE"
+        android:fillAlpha="0.9"
+        android:pathData="M30,35 L50,35 L50,43 L30,43 Z"
+        android:strokeColor="#1D4ED8"
+        android:strokeWidth="0.5"/>
+
+    <!-- Sağ pencere -->
+    <path
+        android:fillColor="#DBEAFE"
+        android:fillAlpha="0.9"
+        android:pathData="M58,35 L78,35 L78,43 L58,43 Z"
+        android:strokeColor="#1D4ED8"
+        android:strokeWidth="0.5"/>
+
+    <!-- Ön cam -->
+    <path
+        android:fillColor="#BFDBFE"
+        android:fillAlpha="0.8"
+        android:pathData="M22,52 L22,66 L44,66 L44,52 Z"/>
+
+    <!-- Arka bölüm -->
+    <path
+        android:fillColor="#1D4ED8"
+        android:pathData="M46,52 L90,52 L90,66 L46,66 Z"/>
+
+    <!-- Kapı çizgisi -->
+    <path
+        android:strokeColor="#60A5FA"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M54,52 L54,66"/>
+
+    <!-- Sol tekerlek -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M28,78 A9,9 0 1,1 27.99,78 Z"/>
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M28,78 A5,5 0 1,1 27.99,78 Z"/>
+
+    <!-- Sağ tekerlek -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M80,78 A9,9 0 1,1 79.99,78 Z"/>
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M80,78 A5,5 0 1,1 79.99,78 Z"/>
+
+    <!-- Belge/fiş ikonu - sağ üst köşe (kurumsal aksan) -->
+    <path
+        android:fillColor="#F0F4FA"
+        android:pathData="M72,18 L86,18 L86,30 L72,30 Z"
+        android:strokeColor="#3B82F6"
+        android:strokeWidth="1"/>
+    <!-- Fiş çizgileri -->
+    <path
+        android:strokeColor="#3B82F6"
+        android:strokeWidth="1.2"
+        android:pathData="M74,22 L84,22 M74,25 L84,25 M74,28 L80,28"/>
+
+    <!-- Küçük para/TL sembolü -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M88,16 A6,6 0 1,1 87.99,16 Z"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.2"
+        android:pathData="M86,19 L90,19 M88,17 L88,21 M86.5,17.5 Q88,16 89.5,17.5"/>
+
 </vector>
