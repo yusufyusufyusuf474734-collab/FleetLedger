@@ -21,19 +21,18 @@ fun TripFormDialog(
     onSave: (Trip) -> Unit
 ) {
     val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-    var date        by remember { mutableStateOf(existing?.let { sdf.format(Date(it.date)) } ?: sdf.format(Date())) }
-    var desc        by remember { mutableStateOf(existing?.description ?: "") }
-    var income      by remember { mutableStateOf(existing?.income?.toInt()?.toString() ?: "") }
-    var fuel        by remember { mutableStateOf(existing?.fuelCost?.toInt()?.toString() ?: "") }
-    var bridge      by remember { mutableStateOf(existing?.bridgeCost?.toInt()?.toString() ?: "") }
-    var highway     by remember { mutableStateOf(existing?.highwayCost?.toInt()?.toString() ?: "") }
-    var driverFee   by remember { mutableStateOf(existing?.driverFee?.toInt()?.toString() ?: "") }
-    var other       by remember { mutableStateOf(existing?.otherCost?.toInt()?.toString() ?: "") }
-    var note        by remember { mutableStateOf(existing?.note ?: "") }
+    var date      by remember { mutableStateOf(existing?.let { sdf.format(Date(it.date)) } ?: sdf.format(Date())) }
+    var desc      by remember { mutableStateOf(existing?.description ?: "") }
+    var income    by remember { mutableStateOf(existing?.income?.toInt()?.toString() ?: "") }
+    var fuel      by remember { mutableStateOf(existing?.fuelCost?.toInt()?.toString() ?: "") }
+    var bridge    by remember { mutableStateOf(existing?.bridgeCost?.toInt()?.toString() ?: "") }
+    var highway   by remember { mutableStateOf(existing?.highwayCost?.toInt()?.toString() ?: "") }
+    var driverFee by remember { mutableStateOf(existing?.driverFee?.toInt()?.toString() ?: "") }
+    var other     by remember { mutableStateOf(existing?.otherCost?.toInt()?.toString() ?: "") }
+    var note      by remember { mutableStateOf(existing?.note ?: "") }
 
-    fun parseDate(s: String): Long = try { sdf.parse(s)?.time ?: System.currentTimeMillis() }
-                                     catch (e: Exception) { System.currentTimeMillis() }
     fun d(s: String) = s.toDoubleOrNull() ?: 0.0
+    val net = d(income) - d(fuel) - d(bridge) - d(highway) - d(driverFee) - d(other)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -43,69 +42,43 @@ fun TripFormDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                MoneyField("Tarih (gg.aa.yyyy)", date, isDate = true) { date = it }
-                MoneyField("Sefer Açıklaması (örn: İst-Ank)", desc, isDate = false) { desc = it }
-                Divider()
+                Field("Tarih (gg.aa.yyyy)", date, isDate = true) { date = it }
+                Field("Sefer Açıklaması (örn: İst-Ank)", desc) { desc = it }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                 Text("Gelir", style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary)
-                MoneyField("Gelir (₺)", income) { income = it }
-                Divider()
+                    color = Green500)
+                Field("Gelir (₺)", income, isNum = true) { income = it }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                 Text("Giderler", style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.error)
-                MoneyField("Yakıt (₺)", fuel) { fuel = it }
-                MoneyField("Köprü (₺)", bridge) { bridge = it }
-                MoneyField("Otoban (₺)", highway) { highway = it }
-                MoneyField("Şoför Ücreti (₺)", driverFee) { driverFee = it }
-                MoneyField("Diğer Gider (₺)", other) { other = it }
-                Divider()
-                MoneyField("Not", note, isDate = false) { note = it }
-
-                // Anlık net hesap
-                val net = d(income) - d(fuel) - d(bridge) - d(highway) - d(driverFee) - d(other)
+                    color = Red500)
+                Field("Yakıt (₺)", fuel, isNum = true) { fuel = it }
+                Field("Köprü (₺)", bridge, isNum = true) { bridge = it }
+                Field("Otoban (₺)", highway, isNum = true) { highway = it }
+                Field("Şoför Ücreti (₺)", driverFee, isNum = true) { driverFee = it }
+                Field("Diğer Gider (₺)", other, isNum = true) { other = it }
+                Field("Not", note) { note = it }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                 Surface(shape = MaterialTheme.shapes.small,
-                    color = if (net >= 0) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                            else MaterialTheme.colorScheme.error.copy(alpha = 0.1f)) {
+                    color = if (net >= 0) Green500.copy(alpha = 0.1f) else Red500.copy(alpha = 0.1f)) {
                     Row(modifier = Modifier.fillMaxWidth().padding(10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Net Kar/Zarar", style = MaterialTheme.typography.bodySmall)
-                        Text(net.fmt(), style = MaterialTheme.typography.bodyMedium,
-                            color = if (net >= 0) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.error)
+                        Text(net.tl(), style = MaterialTheme.typography.bodyMedium,
+                            color = if (net >= 0) Green500 else Red500)
                     }
                 }
             }
         },
         confirmButton = {
             Button(onClick = {
-                val trip = Trip(
-                    id = existing?.id ?: 0,
-                    vehicleId = vehicleId,
-                    date = parseDate(date),
-                    description = desc.trim(),
-                    income = d(income),
-                    fuelCost = d(fuel),
-                    bridgeCost = d(bridge),
-                    highwayCost = d(highway),
-                    driverFee = d(driverFee),
-                    otherCost = d(other),
-                    note = note.trim()
-                )
-                onSave(trip)
+                val epoch = try { sdf.parse(date)?.time ?: System.currentTimeMillis() }
+                            catch (e: Exception) { System.currentTimeMillis() }
+                onSave(Trip(id = existing?.id ?: 0, vehicleId = vehicleId, date = epoch,
+                    description = desc.trim(), income = d(income), fuelCost = d(fuel),
+                    bridgeCost = d(bridge), highwayCost = d(highway), driverFee = d(driverFee),
+                    otherCost = d(other), note = note.trim()))
             }) { Text("Kaydet") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("İptal") } }
-    )
-}
-
-@Composable
-fun MoneyField(label: String, value: String, isDate: Boolean = false, onChange: (String) -> Unit) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onChange,
-        label = { Text(label) },
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        keyboardOptions = if (isDate) KeyboardOptions.Default
-                          else KeyboardOptions(keyboardType = KeyboardType.Number)
     )
 }
