@@ -4,9 +4,14 @@ import android.content.Context
 import androidx.room.*
 
 @TypeConverters(Converters::class)
-@Database(entities = [Vehicle::class, Trip::class, Document::class], version = 2, exportSchema = false)
+@Database(
+    entities = [Vehicle::class, Partner::class, VehiclePartner::class, Trip::class, Document::class],
+    version = 3,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun vehicleDao(): VehicleDao
+    abstract fun partnerDao(): PartnerDao
     abstract fun tripDao(): TripDao
     abstract fun documentDao(): DocumentDao
 

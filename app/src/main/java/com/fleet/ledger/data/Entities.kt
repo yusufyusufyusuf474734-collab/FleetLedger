@@ -5,15 +5,47 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+// ── Araç ─────────────────────────────────────────────────────────────────────
+
 @Entity(tableName = "vehicles")
 data class Vehicle(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val plate: String,
-    val name: String,        // Şoför / araç adı
-    val brand: String = "",  // Marka/model
+    val name: String,
+    val brand: String = "",
     val year: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )
+
+// ── Ortak ─────────────────────────────────────────────────────────────────────
+
+@Entity(tableName = "partners")
+data class Partner(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String,
+    val phone: String = "",
+    val note: String = "",
+    val createdAt: Long = System.currentTimeMillis()
+)
+
+// ── Araç-Ortak ilişkisi (hisse oranı) ────────────────────────────────────────
+
+@Entity(
+    tableName = "vehicle_partners",
+    primaryKeys = ["vehicleId", "partnerId"],
+    foreignKeys = [
+        ForeignKey(Vehicle::class, ["id"], ["vehicleId"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(Partner::class, ["id"], ["partnerId"], onDelete = ForeignKey.CASCADE)
+    ],
+    indices = [Index("vehicleId"), Index("partnerId")]
+)
+data class VehiclePartner(
+    val vehicleId: Long,
+    val partnerId: Long,
+    val sharePercent: Double  // 0-100 arası hisse yüzdesi
+)
+
+// ── Sefer ─────────────────────────────────────────────────────────────────────
 
 @Entity(
     tableName = "trips",
@@ -32,11 +64,14 @@ data class Trip(
     val driverFee: Double = 0.0,
     val otherCost: Double = 0.0,
     val note: String = "",
+    val receiptImagePath: String = "",   // Fiş fotoğrafı yolu
     val createdAt: Long = System.currentTimeMillis()
 ) {
     val totalExpense: Double get() = fuelCost + bridgeCost + highwayCost + driverFee + otherCost
     val netProfit: Double get() = income - totalExpense
 }
+
+// ── Belge ─────────────────────────────────────────────────────────────────────
 
 enum class DocumentType(val label: String) {
     KASKO("Kasko"),
@@ -56,12 +91,12 @@ data class Document(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val vehicleId: Long,
     val type: DocumentType,
-    val title: String,           // Belge başlığı / poliçe no
-    val company: String = "",    // Sigorta şirketi
-    val policyNo: String = "",   // Poliçe numarası
-    val startDate: Long? = null, // Başlangıç tarihi
-    val expiryDate: Long? = null,// Bitiş tarihi
-    val amount: Double = 0.0,    // Prim / ücret
+    val title: String,
+    val company: String = "",
+    val policyNo: String = "",
+    val startDate: Long? = null,
+    val expiryDate: Long? = null,
+    val amount: Double = 0.0,
     val note: String = "",
     val createdAt: Long = System.currentTimeMillis()
 )

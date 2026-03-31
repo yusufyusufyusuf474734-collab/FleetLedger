@@ -1,15 +1,23 @@
 package com.fleet.ledger.ui
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.fleet.ledger.data.Trip
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +38,21 @@ fun TripFormDialog(
     var driverFee by remember { mutableStateOf(existing?.driverFee?.toInt()?.toString() ?: "") }
     var other     by remember { mutableStateOf(existing?.otherCost?.toInt()?.toString() ?: "") }
     var note      by remember { mutableStateOf(existing?.note ?: "") }
+    var receiptPath by remember { mutableStateOf(existing?.receiptImagePath ?: "") }
+
+    val context = LocalContext.current
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            // Dosyayı uygulama dizinine kopyala
+            val dest = File(context.filesDir, "receipt_${System.currentTimeMillis()}.jpg")
+            context.contentResolver.openInputStream(it)?.use { input ->
+                dest.outputStream().use { out -> input.copyTo(out) }
+            }
+            receiptPath = dest.absolutePath
+        }
+    }
 
     fun d(s: String) = s.toDoubleOrNull() ?: 0.0
     val net = d(income) - d(fuel) - d(bridge) - d(highway) - d(driverFee) - d(other)
@@ -67,6 +90,31 @@ fun TripFormDialog(
                 TF("Şoför Ücreti (₺)", driverFee, isNum = true) { driverFee = it }
                 TF("Diğer Gider (₺)", other, isNum = true) { other = it }
                 TF("Not", note) { note = it }
+                // Fiş fotoğrafı
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Receipt, null, modifier = Modifier.size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        if (receiptPath.isNotBlank()) "Fiş eklendi ✓" else "Fiş fotoğrafı ekle",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (receiptPath.isNotBlank()) Green500
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedButton(
+                        onClick = { galleryLauncher.launch("image/*") },
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Icon(Icons.Default.Image, null, modifier = Modifier.size(14.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text("Seç", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
                 Surface(
                     shape = MaterialTheme.shapes.small,
@@ -98,7 +146,8 @@ fun TripFormDialog(
                     highwayCost = d(highway),
                     driverFee = d(driverFee),
                     otherCost = d(other),
-                    note = note.trim()
+                    note = note.trim(),
+                    receiptImagePath = receiptPath
                 ))
             }) { Text("Kaydet") }
         },

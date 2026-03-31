@@ -7,16 +7,47 @@ import kotlinx.coroutines.flow.Flow
 interface VehicleDao {
     @Query("SELECT * FROM vehicles ORDER BY plate ASC")
     fun getAll(): Flow<List<Vehicle>>
-
     @Insert fun insert(v: Vehicle): Long
     @Update fun update(v: Vehicle)
     @Delete fun delete(v: Vehicle)
 }
 
 @Dao
+interface PartnerDao {
+    @Query("SELECT * FROM partners ORDER BY name ASC")
+    fun getAll(): Flow<List<Partner>>
+
+    @Query("""
+        SELECT p.* FROM partners p
+        INNER JOIN vehicle_partners vp ON p.id = vp.partnerId
+        WHERE vp.vehicleId = :vid
+    """)
+    fun getByVehicle(vid: Long): Flow<List<Partner>>
+
+    @Query("SELECT * FROM vehicle_partners WHERE vehicleId = :vid")
+    fun getSharesByVehicle(vid: Long): Flow<List<VehiclePartner>>
+
+    @Insert fun insert(p: Partner): Long
+    @Update fun update(p: Partner)
+    @Delete fun delete(p: Partner)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertVehiclePartner(vp: VehiclePartner)
+
+    @Query("DELETE FROM vehicle_partners WHERE vehicleId = :vid AND partnerId = :pid")
+    fun removeVehiclePartner(vid: Long, pid: Long)
+
+    @Query("DELETE FROM vehicle_partners WHERE vehicleId = :vid")
+    fun removeAllPartnersFromVehicle(vid: Long)
+}
+
+@Dao
 interface TripDao {
     @Query("SELECT * FROM trips WHERE vehicleId = :vid ORDER BY date DESC")
     fun getByVehicle(vid: Long): Flow<List<Trip>>
+
+    @Query("SELECT * FROM trips WHERE vehicleId = :vid AND date BETWEEN :from AND :to ORDER BY date DESC")
+    fun getByVehicleAndRange(vid: Long, from: Long, to: Long): Flow<List<Trip>>
 
     @Query("SELECT * FROM trips ORDER BY date DESC")
     fun getAll(): Flow<List<Trip>>
@@ -28,6 +59,16 @@ interface TripDao {
         FROM trips GROUP BY vehicleId
     """)
     fun getSummaryPerVehicle(): Flow<List<VehicleSummary>>
+
+    @Query("""
+        SELECT vehicleId,
+               SUM(income) AS totalIncome,
+               SUM(fuelCost + bridgeCost + highwayCost + driverFee + otherCost) AS totalExpense
+        FROM trips
+        WHERE date BETWEEN :from AND :to
+        GROUP BY vehicleId
+    """)
+    fun getSummaryPerVehicleInRange(from: Long, to: Long): Flow<List<VehicleSummary>>
 
     @Insert fun insert(t: Trip): Long
     @Update fun update(t: Trip)

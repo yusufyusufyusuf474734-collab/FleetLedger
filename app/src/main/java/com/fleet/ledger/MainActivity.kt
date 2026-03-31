@@ -34,37 +34,50 @@ class MainActivity : ComponentActivity() {
                     )
                 } else {
                     Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text(
+                                        when (currentTab) {
+                                            0 -> "Genel Bakış"
+                                            1 -> "Araçlar"
+                                            2 -> "Ortaklar"
+                                            3 -> "Aylık Rapor"
+                                            else -> "FiloTakip"
+                                        },
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.surface)
+                            )
+                        },
                         bottomBar = {
                             NavigationBar(
                                 containerColor = MaterialTheme.colorScheme.surface,
                                 tonalElevation = 0.dp
                             ) {
                                 NavigationBarItem(
-                                    selected = currentTab == 0,
-                                    onClick = { currentTab = 0 },
-                                    icon = { Icon(Icons.Default.Dashboard, "Özet") },
+                                    selected = currentTab == 0, onClick = { currentTab = 0 },
+                                    icon = { Icon(Icons.Default.Dashboard, null) },
                                     label = { Text("Özet") }
                                 )
                                 NavigationBarItem(
-                                    selected = currentTab == 1,
-                                    onClick = { currentTab = 1 },
-                                    icon = { Icon(Icons.Default.DirectionsBus, "Araçlar") },
+                                    selected = currentTab == 1, onClick = { currentTab = 1 },
+                                    icon = { Icon(Icons.Default.DirectionsBus, null) },
                                     label = { Text("Araçlar") }
                                 )
-                            }
-                        },
-                        topBar = {
-                            TopAppBar(
-                                title = {
-                                    Text(
-                                        if (currentTab == 0) "Genel Bakış" else "Araçlar",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                },
-                                colors = TopAppBarDefaults.topAppBarColors(
-                                    containerColor = MaterialTheme.colorScheme.surface
+                                NavigationBarItem(
+                                    selected = currentTab == 2, onClick = { currentTab = 2 },
+                                    icon = { Icon(Icons.Default.Group, null) },
+                                    label = { Text("Ortaklar") }
                                 )
-                            )
+                                NavigationBarItem(
+                                    selected = currentTab == 3, onClick = { currentTab = 3 },
+                                    icon = { Icon(Icons.Default.BarChart, null) },
+                                    label = { Text("Rapor") }
+                                )
+                            }
                         },
                         containerColor = MaterialTheme.colorScheme.background,
                         contentWindowInsets = WindowInsets(0)
@@ -73,6 +86,8 @@ class MainActivity : ComponentActivity() {
                             when (currentTab) {
                                 0 -> DashboardScreen(vm)
                                 1 -> VehiclesScreen(vm, onVehicleClick = { selectedVehicleId = it })
+                                2 -> PartnersScreen(vm)
+                                3 -> MonthlyReportScreen(vm)
                             }
                         }
                     }
