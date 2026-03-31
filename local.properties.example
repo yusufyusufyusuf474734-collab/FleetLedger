@@ -1,0 +1,27 @@
+# Bu dosyayı 'local.properties' olarak kopyalayın ve kendi API anahtarlarınızı ekleyin
+# local.properties dosyası Git'e eklenmez (güvenlik için)
+
+# SDK konumu (Android Studio otomatik ekler)
+sdk.dir=/path/to/Android/Sdk
+
+# Firebase API Key (Firebase Console'dan alın)
+firebase.api.key=YOUR_FIREBASE_API_KEY_HERE
+
+# Google Maps API Key (Google Cloud Console'dan alın)
+google.maps.api.key=YOUR_GOOGLE_MAPS_API_KEY_HERE
+
+# Muhasebe Yazılımı Entegrasyonu (Opsiyonel)
+accounting.logo.api.key=YOUR_LOGO_API_KEY_HERE
+accounting.logo.company.code=YOUR_COMPANY_CODE_HERE
+accounting.logo.base.url=https://api.logo.com.tr
+
+# E-Fatura Entegrasyonu (Opsiyonel)
+einvoice.api.key=YOUR_GIB_API_KEY_HERE
+einvoice.username=YOUR_GIB_USERNAME_HERE
+einvoice.password=YOUR_GIB_PASSWORD_HERE
+einvoice.base.url=https://efatura.gov.tr/api
+
+# Banka API Entegrasyonu (Opsiyonel)
+banking.api.key=YOUR_BANK_API_KEY_HERE
+banking.account.number=YOUR_ACCOUNT_NUMBER_HERE
+banking.base.url=https://api.yourbank.com

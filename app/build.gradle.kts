@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    // Firebase için (aktifleştirmek için yorumu kaldır)
+    // id("com.google.gms.google-services")
 }
 
 android {
@@ -15,6 +17,22 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        
+        // API anahtarlarını BuildConfig'e ekle
+        val properties = java.util.Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        
+        buildConfigField("String", "GOOGLE_MAPS_API_KEY", 
+            "\"${properties.getProperty("google.maps.api.key", "")}\"")
+        buildConfigField("String", "ACCOUNTING_API_KEY", 
+            "\"${properties.getProperty("accounting.logo.api.key", "")}\"")
+        buildConfigField("String", "EINVOICE_API_KEY", 
+            "\"${properties.getProperty("einvoice.api.key", "")}\"")
+        buildConfigField("String", "BANKING_API_KEY", 
+            "\"${properties.getProperty("banking.api.key", "")}\"")
     }
 
     buildTypes {
@@ -27,7 +45,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures { 
+        compose = true
+        buildConfig = true
+    }
 }
 
 dependencies {
