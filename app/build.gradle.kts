@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,10 +22,10 @@ android {
         versionName = "1.0"
         
         // API anahtarlarını BuildConfig'e ekle
-        val properties = java.util.Properties()
+        val properties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
+            properties.load(FileInputStream(localPropertiesFile))
         }
         
         buildConfigField("String", "GOOGLE_MAPS_API_KEY", 
